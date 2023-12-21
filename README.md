@@ -12,7 +12,7 @@
 
 <h2>Dataset Preparation</h2>
 <ol>
-    <li>The Braille Dataset should be organized in the following structure:</li>
+    <li>The Braille Dataset is organized in the following structure:</li>
     <code>
         dataset/<br>
         └── Braille Dataset/<br>
