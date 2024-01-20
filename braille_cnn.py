@@ -12,17 +12,17 @@ from keras.layers import Dropout, BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
 
 # import matplotlib.pyplot as plt
+if not os.path.exists('./images/'):
+    os.mkdir('./images/')
+    alpha = 'a'
+    for i in range(0, 26): 
+        os.mkdir('./images/' + alpha)
+        alpha = chr(ord(alpha) + 1)
 
-os.mkdir('./images/')
-alpha = 'a'
-for i in range(0, 26): 
-    os.mkdir('./images/' + alpha)
-    alpha = chr(ord(alpha) + 1)
-
-rootdir = 'dataset/Braille Dataset/Braille Dataset/'
-for file in os.listdir(rootdir):
-    letter = file[0]
-    copyfile(rootdir+file, './images/' + letter + '/' + file)
+    rootdir = 'dataset/Braille Dataset/Braille Dataset/'
+    for file in os.listdir(rootdir):
+        letter = file[0]
+        copyfile(rootdir+file, './images/' + letter + '/' + file)
 
 datagen = ImageDataGenerator(rotation_range=20,
                              shear_range=10,
@@ -74,7 +74,7 @@ x = L.Dropout(0.5)(x)
 x = L.Dense(26, activation='softmax')(x)
 
 model = Model(entry, x)
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', 'precision', 'recall', 'f1_score'])
 
 history = model.fit_generator(train_generator,
                               validation_data=val_generator,
@@ -91,7 +91,15 @@ model = load_model('BrailleNet.h5')
 eval_results = model.evaluate_generator(val_generator)
 
 # Extract the accuracy from the evaluation results
+loss = eval_results[0]
 accuracy = eval_results[1]
+precision = eval_results[2]
+recall = eval_results[3]
+f1_score = eval_results[4]
 
-# Print the accuracy
-print('Validation Accuracy: {:.2%}'.format(accuracy))
+# Print the performance metrics
+print('Validation Loss: {:0.4f}'.format(loss))
+print('Validation Accuracy: {:0.4f}'.format(accuracy))
+print('Validation Precision: {:0.4f}'.format(precision))
+print('Validation Recall: {:0.4f}'.format(recall))
+print('Validation F1-score: {:0.4f}'.format(f1_score))
